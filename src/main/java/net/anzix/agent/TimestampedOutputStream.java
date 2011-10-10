@@ -15,6 +15,7 @@ public class TimestampedOutputStream extends PrintStream {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat(
 			"yyyy.MM.dd HH:mm:ss.SSS");
+	
 	private boolean lineEnded = true;
 
 	@Override
@@ -28,13 +29,13 @@ public class TimestampedOutputStream extends PrintStream {
 
 	@Override
 	public void print(String s) {
+		String ls = System.getProperty("line.separator");
 		if (lineEnded) {
 			super.print(getPrefix() + " ");
 		}
-		super.print(s.replaceAll(System.lineSeparator(), System.lineSeparator()
-				+ getPrefix() + " "));
+		super.print(s.replaceAll(ls, ls + getPrefix() + " "));
 
-		if (s.endsWith(System.lineSeparator())) {
+		if (s.endsWith(ls)) {
 			lineEnded = true;
 		} else {
 			lineEnded = false;
