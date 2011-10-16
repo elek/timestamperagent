@@ -6,11 +6,11 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class TimestampedOutputStreamTest {
+public class TimestampedPrintStreamTest {
 	@Test
 	public void print() {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		TimestampedOutputStream ts = new TimestampedOutputStream(baos) {
+		TimestampedPrintStream ts = new TimestampedPrintStream(baos) {
 
 			@Override
 			protected String getPrefix() {
@@ -34,7 +34,7 @@ public class TimestampedOutputStreamTest {
 	@Test
 	public void printTypes() {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		TimestampedOutputStream ts = new TimestampedOutputStream(baos) {
+		TimestampedPrintStream ts = new TimestampedPrintStream(baos) {
 
 			@Override
 			protected String getPrefix() {

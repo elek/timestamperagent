@@ -9,14 +9,13 @@ import java.lang.instrument.Instrumentation;
  * 
  */
 public class TimestamperAgent {
-	
+
 	public static void premain(String args, Instrumentation inst) {
 		modifySystemOut();
 	}
 
 	private static void modifySystemOut() {
-		System.setOut(new TimestampedOutputStream(System.out));
-		System.setErr(new TimestampedOutputStream(System.err));
+		Timestamper.changeStreams();
 	}
 
 	public static void main(String[] args) {

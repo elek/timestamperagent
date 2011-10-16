@@ -11,7 +11,7 @@ import java.util.Date;
  * @author elek
  * 
  */
-public class TimestampedOutputStream extends PrintStream {
+public class TimestampedPrintStream extends PrintStream {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat(
 			"yyyy.MM.dd HH:mm:ss.SSS");
@@ -48,7 +48,7 @@ public class TimestampedOutputStream extends PrintStream {
 		lineEnded = true;
 	}
 
-	public TimestampedOutputStream(OutputStream out) {
+	public TimestampedPrintStream(OutputStream out) {
 		super(out);
 	}
 

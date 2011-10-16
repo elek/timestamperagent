@@ -1,0 +1,9 @@
+<component-set>
+    <components>
+        <component>
+            <role>org.apache.maven.AbstractMavenLifecycleParticipant</role>
+            <role-hint>retro</role-hint>
+            <implementation>net.anzix.agent.MavenExtension</implementation>
+        </component>        
+    </components>
+</component-set>

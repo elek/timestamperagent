@@ -1,5 +1,16 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'org.linkedin:org.linkedin.gradle-plugins:1.5.0'
+  }
+}
+
 apply plugin: 'java'
+apply plugin: 'maven'
 apply plugin: 'eclipse'
+apply plugin: 'org.linkedin.release'
 
 sourceCompatibility = 1.6
 repositories {
@@ -14,6 +25,73 @@ jar {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
+    compile group: 'org.apache.maven', name: 'maven-compat', version: '3.0.3'
+    compile group: 'org.apache.maven', name: 'maven-core', version: '3.0.3'
 }
 
 
+/**
+ * Repositories for publish
+ */
+publish = {
+  mavenDeployer {
+    repository(url: "file:///tmp/")
+    pom.whenConfigured { pomToConfigure ->
+      pomToConfigure.project {
+        version '1.0-SNAPSHOT'
+        artifactId 'timestamperagent'
+        groupId 'net.anzix'
+        name project.name
+        description "Toolkit to create timestamped output to the console or a file"
+        url "http://github.com/elek/timestamperagent"
+        licenses {
+          license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0"
+          }
+        }
+        developers {
+          developer {
+            id "elek"
+            name "Elek, Marton"
+            email "level2@anzix.net"
+          }
+        }
+        scm {
+          connection "scm:git:git://github.com/elek/timestamperagent.git"
+          developerConnection "scm:git:git@github.com:elek/timestamperagent.git"
+          url "https://github.com/elek/timestamperagent"
+        }
+      }
+    }
+  }
+}
+
+configure(install.repositories.mavenInstaller) {
+    pom.project {
+        version '1.0-SNAPSHOT'
+        artifactId 'timestamperagent'
+        groupId 'net.anzix'
+        name project.name
+        description "Toolkit to create timestamped output to the console or a file"
+        url "http://github.com/elek/timestamperagent"
+        licenses {
+          license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0"
+          }
+        }
+        developers {
+          developer {
+            id "elek"
+            name "Elek, Marton"
+            email "level2@anzix.net"
+          }
+        }
+        scm {
+          connection "scm:git:git://github.com/elek/timestamperagent.git"
+          developerConnection "scm:git:git@github.com:elek/timestamperagent.git"
+          url "https://github.com/elek/timestamperagent"
+        }
+    }
+}
