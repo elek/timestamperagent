@@ -1,21 +1,29 @@
 buildscript {
-  repositories {
+    repositories {
+        mavenCentral()
+        mavenRepo urls: 'http://evgeny-goldin.org/artifactory/repo/'
+    }
+    dependencies {
+        classpath 'de.huxhorn.gradle:de.huxhorn.gradle.pgp-plugin:0.0.3'
+        classpath 'com.goldin.plugins:gradle:0.1-RC'
+    }    
+}
+
+
+repositories {
     mavenCentral()
-  }
-  dependencies {
-    classpath 'org.linkedin:org.linkedin.gradle-plugins:1.5.0'
-  }
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
-apply plugin: 'org.linkedin.release'
+apply plugin: de.huxhorn.gradle.pgp.PgpPlugin
+
+group = "net.anzix"
+version = "1.1-SNAPSHOT"
 
 sourceCompatibility = 1.6
-repositories {
-    mavenCentral()
-}
+
 
 jar {
     manifest {
@@ -24,74 +32,72 @@ jar {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'junit', name: 'junit', version: '4.7'
     compile group: 'org.apache.maven', name: 'maven-compat', version: '3.0.3'
     compile group: 'org.apache.maven', name: 'maven-core', version: '3.0.3'
 }
 
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn:classes) {
+     classifier = 'sources'
+     from sourceSets.main.allSource
+}
+ 
+task javadocJar(type: Jar, dependsOn:javadoc) {
+     classifier = 'javadoc'
+     from javadoc.destinationDir
+}
+ 
+// add javadoc/source jar tasks as artifacts
+artifacts {
+     archives sourcesJar
+     archives javadocJar
+}
 
-/**
- * Repositories for publish
- */
-publish = {
-  mavenDeployer {
-    repository(url: "file:///tmp/")
-    pom.whenConfigured { pomToConfigure ->
-      pomToConfigure.project {
-        version '1.0-SNAPSHOT'
-        artifactId 'timestamperagent'
-        groupId 'net.anzix'
-        name project.name
-        description "Toolkit to create timestamped output to the console or a file"
-        url "http://github.com/elek/timestamperagent"
-        licenses {
-          license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0"
-          }
+pgp {
+    secretKeyRingFile = new File("${System.properties['user.home']}/.gnupg/secring.gpg")
+    keyId = '57CA005A'
+    password = pgpPassword
+}
+
+uploadArchives {
+  repositories.mavenDeployer {
+    configuration = configurations.archives
+    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+      authentication(userName: nexusUsername, password: nexusPassword)
+    }
+ 
+    pom.project {
+      name 'Timestamper'
+      packaging 'jar'
+      description 'Modify output (with javaagent and maven extension) to prefix with timestamp'
+      url 'http://github.com/elek/timestamperagent'
+      inceptionYear '2011'
+ 
+      scm {
+        url 'scm:git:git://github.com/elek/timestamperagent.git'
+        connection 'git@github.com:elek/timestamperagent.git'
+      }
+ 
+      licenses {
+        license {
+          name 'GPLv3'
         }
-        developers {
-          developer {
-            id "elek"
-            name "Elek, Marton"
-            email "level2@anzix.net"
+      }
+ 
+      developers {
+        developer {
+          id 'elek'
+          name 'Elek, Marton'
+          email 'level2@anzix.net'
+          url 'https://github.com/elek/timestamperagent'
+          roles{
+            role 'Developer'
           }
-        }
-        scm {
-          connection "scm:git:git://github.com/elek/timestamperagent.git"
-          developerConnection "scm:git:git@github.com:elek/timestamperagent.git"
-          url "https://github.com/elek/timestamperagent"
+          timezone '+1'
         }
       }
     }
   }
 }
-
-configure(install.repositories.mavenInstaller) {
-    pom.project {
-        version '1.0-SNAPSHOT'
-        artifactId 'timestamperagent'
-        groupId 'net.anzix'
-        name project.name
-        description "Toolkit to create timestamped output to the console or a file"
-        url "http://github.com/elek/timestamperagent"
-        licenses {
-          license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0"
-          }
-        }
-        developers {
-          developer {
-            id "elek"
-            name "Elek, Marton"
-            email "level2@anzix.net"
-          }
-        }
-        scm {
-          connection "scm:git:git://github.com/elek/timestamperagent.git"
-          developerConnection "scm:git:git@github.com:elek/timestamperagent.git"
-          url "https://github.com/elek/timestamperagent"
-        }
-    }
-}
+  
