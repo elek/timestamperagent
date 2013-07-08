@@ -7,53 +7,56 @@ import java.util.Date;
 
 /**
  * Output stream which decorate the lines with the current timestamp.
- * 
+ *
  * @author elek
- * 
  */
 public class TimestampedPrintStream extends PrintStream {
 
-	private SimpleDateFormat sdf = new SimpleDateFormat(
-			"yyyy.MM.dd HH:mm:ss.SSS");
-	
-	private boolean lineEnded = true;
+    private SimpleDateFormat sdf = new SimpleDateFormat(
+            "yyyy.MM.dd HH:mm:ss.SSS");
 
-	@Override
-	public void print(long l) {
-		if (lineEnded) {
-			super.print(getPrefix() + " ");
-			lineEnded = false;
-		}
-		super.print(l);
-	}
+    private boolean lineEnded = true;
 
-	@Override
-	public void print(String s) {
-		String ls = System.getProperty("line.separator");
-		if (lineEnded) {
-			super.print(getPrefix() + " ");
-		}
-		super.print(s.replaceAll(ls, ls + getPrefix() + " "));
+    @Override
+    public void print(long l) {
+        if (lineEnded) {
+            super.print(getPrefix() + " ");
+            lineEnded = false;
+        }
+        super.print(l);
+    }
 
-		if (s.endsWith(ls)) {
-			lineEnded = true;
-		} else {
-			lineEnded = false;
-		}
-	}
+    public String getLineSeparator() {
+        return System.getProperty("line.separator");
+    }
 
-	@Override
-	public void println(String x) {
-		super.println(x);
-		lineEnded = true;
-	}
+    @Override
+    public void print(String s) {
+        String ls = getLineSeparator();
+        if (lineEnded) {
+            super.print(getPrefix() + " ");
+        }
+        super.print(s.replaceAll(ls, ls + getPrefix() + " "));
 
-	public TimestampedPrintStream(OutputStream out) {
-		super(out);
-	}
+        if (s.endsWith(ls)) {
+            lineEnded = true;
+        } else {
+            lineEnded = false;
+        }
+    }
 
-	protected String getPrefix() {
-		return sdf.format(new Date());
-	}
+    @Override
+    public void println(String x) {
+        super.println(x);
+        lineEnded = true;
+    }
+
+    public TimestampedPrintStream(OutputStream out) {
+        super(out);
+    }
+
+    protected String getPrefix() {
+        return sdf.format(new Date());
+    }
 
 }
